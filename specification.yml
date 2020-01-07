@@ -1,0 +1,315 @@
+openapi: 3.0.1
+info:
+  title: 3D Printing Catalog
+  description: OpenAPI to access product information for a 3D printing catalog
+  version: "1.0.0"
+
+servers:
+  - url: http://localhost:3000/
+    description: localhost
+paths:
+  /products:
+    get:
+      summary: retrieve list of all products in catalog
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Successful Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          allOf:
+                            - type: object
+                              properties:
+                                productId:
+                                  type: integer
+                                productName:
+                                  type: string
+                                productDescription:
+                                  type: string
+                                productImgs:
+                                  type: array
+                                  items:
+                                    type: string
+                                productCategory:
+                                  type: string
+                                ratingsCount:
+                                  type: integer
+                                ratings:
+                                  type: array
+                                  items:
+                                    type: integer
+
+                      statusCode:
+                        type: integer
+                    required:
+                      - productId
+                      - productName
+                      - productDescription
+                      - productImgs
+                      - ratingsCount
+                      - avgRating
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      statusCode:
+                        type: integer
+                    required:
+                      - message
+                      - statusCode
+
+    post:
+      summary: add a new product to catalog
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productName:
+                  type: string
+                productDescription:
+                  type: string
+                productCategory:
+                  type: string
+      responses:
+        "200":
+          description: Successful Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                      productName:
+                        type: string
+                      productDescription:
+                        type: string
+                      productCategory:
+                        type: string
+                      ratingsCount:
+                        type: integer
+                      ratings:
+                        type: array
+                        items:
+                          type: integer
+                  statusCode:
+                    type: integer
+                required:
+                  - product
+                  - statusCode
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  statusCode:
+                    type: integer
+                required:
+                  - message
+                  - statusCode
+  /products/{productId}:
+    get:
+      summary: retrieve a product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the product to retrieve
+      responses:
+        "200":
+          description: Successful Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      product:
+                        type: object
+                        properties:
+                          productId:
+                            type: integer
+                          productName:
+                            type: string
+                          productDescription:
+                            type: string
+                          productImgs:
+                            type: array
+                            items:
+                              type: string
+                          productCategory:
+                            type: string
+                          ratingsCount:
+                            type: integer
+                          ratings:
+                            type: array
+                            items:
+                              type: integer
+                      statusCode:
+                        type: integer
+                    required:
+                      - product
+                      - statusCode
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      statusCode:
+                        type: integer
+                    required:
+                      - message
+                      - statusCode
+    patch:
+      summary: modify a product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the product to modify
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productName:
+                  type: string
+                productDescription:
+                  type: string
+                productImgs:
+                  type: array
+                  items:
+                    type: string
+                productCategory:
+                  type: string
+      responses:
+        "200":
+          description: Successful Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      product:
+                        type: object
+                        properties:
+                          productId:
+                            type: integer
+                          productName:
+                            type: string
+                          productDescription:
+                            type: string
+                          productImgs:
+                            type: array
+                            items:
+                              type: string
+                          ratingsCount:
+                            type: integer
+                          ratings:
+                            type: array
+                            items:
+                              type: integer
+                      statusCode:
+                        type: integer
+                    required:
+                      - product
+                      - statusCode
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      statusCode:
+                        type: integer
+                    required:
+                      - message
+                      - statusCode
+    delete:
+      summary: delete a product
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the product to delete
+      responses:
+        "200":
+          description: Successful Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      productName:
+                        type: string
+                      statusCode:
+                        type: integer
+                    required:
+                      - productName
+                      - statusCode
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      statusCode:
+                        type: integer
+                    required:
+                      - message
+                      - statusCode
