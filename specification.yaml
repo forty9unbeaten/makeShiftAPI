@@ -3,7 +3,6 @@ info:
   title: 3D Printing Catalog
   description: OpenAPI to access product information for a 3D printing catalog
   version: "1.0.0"
-
 servers:
   - url: http://localhost:3000/
     description: localhost
