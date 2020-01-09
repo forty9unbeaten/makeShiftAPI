@@ -2,35 +2,35 @@ import { Product } from "../models";
 import { sqlAttributes } from "./constants";
 
 export const sendAllProducts = (request, response) => {
-  try {
-    Product.findAll({
-      attributes: sqlAttributes
-    }).then(products => {
+  Product.findAll({
+    attributes: sqlAttributes
+  })
+    .then(products => {
       response.send(
         JSON.stringify({
           products,
           statusCode: 200
         })
       );
+    })
+    .catch(error => {
+      response.send(
+        JSON.stringify({
+          message: error,
+          statusCode: 400
+        })
+      );
     });
-  } catch (error) {
-    response.send(
-      JSON.stringify({
-        message: error,
-        statusCode: 400
-      })
-    );
-  }
 };
 
 export const sendRequestedProduct = (request, response) => {
-  try {
-    Product.findAll({
-      attributes: sqlAttributes,
-      where: {
-        id: request.params.id
-      }
-    }).then(product => {
+  Product.findAll({
+    attributes: sqlAttributes,
+    where: {
+      id: request.params.id
+    }
+  })
+    .then(product => {
       if (product[0]) {
         response.send(
           JSON.stringify({
@@ -46,13 +46,13 @@ export const sendRequestedProduct = (request, response) => {
           })
         );
       }
+    })
+    .catch(error => {
+      response.send(
+        JSON.stringify({
+          message: error,
+          statusCode: 400
+        })
+      );
     });
-  } catch (error) {
-    response.send(
-      JSON.stringify({
-        message: error,
-        statusCode: 400
-      })
-    );
-  }
 };
