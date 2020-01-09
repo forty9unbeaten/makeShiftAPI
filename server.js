@@ -12,7 +12,7 @@ database
     console.log("Database has connected");
   })
   .catch(err => {
-    console.log(`Failed to connect to database...error: ${err}`);
+    console.log(`Failed to connect to database *** ERROR: ${err}`);
   });
 
 // start server
