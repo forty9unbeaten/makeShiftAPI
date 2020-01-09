@@ -29,7 +29,7 @@ paths:
                           allOf:
                             - type: object
                               properties:
-                                productId:
+                                id:
                                   type: integer
                                 productName:
                                   type: string
@@ -101,7 +101,7 @@ paths:
                   product:
                     type: object
                     properties:
-                      productId:
+                      id:
                         type: integer
                       productName:
                         type: string
@@ -158,7 +158,7 @@ paths:
                       product:
                         type: object
                         properties:
-                          productId:
+                          id:
                             type: integer
                           productName:
                             type: string
@@ -236,7 +236,7 @@ paths:
                       product:
                         type: object
                         properties:
-                          productId:
+                          id:
                             type: integer
                           productName:
                             type: string
