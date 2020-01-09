@@ -1,6 +1,7 @@
 import express from "express";
 import swaggerDocRouter from "./SwaggerDocRouter";
 import { database } from "./database";
+import { sendAllProducts, sendRequestedProduct } from "./controllers";
 
 const server = express();
 const port = process.env.PORT || 3000;
@@ -16,6 +17,10 @@ database
   });
 
 // start server
-server.use("/", swaggerDocRouter).listen(port, () => {
-  console.log(`Server is now listening on port ${port}`);
-});
+server
+  .use("/", swaggerDocRouter)
+  .get("/products", sendAllProducts)
+  .get("/products/:id", sendRequestedProduct)
+  .listen(port, () => {
+    console.log(`Server is now listening on port ${port}`);
+  });
