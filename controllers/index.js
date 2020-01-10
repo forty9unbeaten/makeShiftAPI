@@ -2,5 +2,6 @@ export {
   sendAllProducts,
   sendRequestedProduct,
   addNewProduct,
-  deleteProduct
+  deleteProduct,
+  updateProduct
 } from "./product";

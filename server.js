@@ -6,7 +6,8 @@ import {
   sendAllProducts,
   sendRequestedProduct,
   addNewProduct,
-  deleteProduct
+  deleteProduct,
+  updateProduct
 } from "./controllers";
 
 const server = express();
@@ -30,6 +31,7 @@ server
   .post("/products", addNewProduct)
   .get("/products", sendAllProducts)
   .get("/products/:id", sendRequestedProduct)
+  .patch("/products/:id", updateProduct)
   .delete("/products/:id", deleteProduct)
   .listen(PORT, () => {
     console.log(`Server is now running on port ${PORT}`);
