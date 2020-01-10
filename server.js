@@ -5,10 +5,12 @@ import { database } from "./database";
 import {
   sendAllProducts,
   sendRequestedProduct,
-  addNewProduct
+  addNewProduct,
+  deleteProduct
 } from "./controllers";
 
 const server = express();
+const PORT = process.env.PORT || 3000;
 
 // connect to database
 database
@@ -21,15 +23,14 @@ database
   });
 
 // server setup
-server
-  .set("port", process.env.PORT || 3000)
-  .use(swaggerDocRouter, bodyParser.json());
+server.use(swaggerDocRouter, bodyParser.json());
 
 // start server
 server
   .post("/products", addNewProduct)
   .get("/products", sendAllProducts)
   .get("/products/:id", sendRequestedProduct)
-  .listen(() => {
-    console.log(`Server is now running on port ${server.get("port")}`);
+  .delete("/products/:id", deleteProduct)
+  .listen(PORT, () => {
+    console.log(`Server is now running on port ${PORT}`);
   });
