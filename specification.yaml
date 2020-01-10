@@ -110,6 +110,10 @@ paths:
                         type: string
                       productDescription:
                         type: string
+                      productImgs:
+                        type: array
+                        items:
+                          type: string
                       productCategory:
                         type: string
                       ratingsCount:
