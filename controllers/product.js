@@ -30,7 +30,7 @@ export const sendRequestedProduct = (request, response) => {
     .then(product => {
       if (product[0]) {
         response.send({
-          product,
+          product: product[0],
           statusCode: response.statusCode
         });
       } else {
@@ -99,35 +99,111 @@ export const deleteProduct = (request, response) => {
     where: {
       id: request.params.id
     }
-  }).then(product => {
-    if (product[0]) {
-      // product returned from SELECT query is an array of objects
-      const productName = product[0].productName;
+  })
+    .then(product => {
+      if (product[0]) {
+        // product returned from SELECT query is an array of objects
+        const productName = product[0].productName;
 
-      Product.destroy({
-        where: {
-          id: request.params.id
-        }
-      })
-        .then(() => {
-          response.send({
-            productName,
-            statusCode: response.statusCode
-          });
+        Product.destroy({
+          where: {
+            id: request.params.id
+          }
         })
-        .catch(error => {
-          response.statusCode = 400;
-          response.send({
-            message: error,
-            statusCode: response.statusCode
+          .then(() => {
+            response.send({
+              productName,
+              statusCode: response.statusCode
+            });
+          })
+          .catch(error => {
+            response.statusCode = 400;
+            response.send({
+              message: error,
+              statusCode: response.statusCode
+            });
           });
+      } else {
+        response.statusCode = 404;
+        response.send({
+          message: `Unable to find product with an id of ${request.params.id}`,
+          statusCode: response.statusCode
         });
-    } else {
-      response.statusCode = 404;
+      }
+    })
+    .catch(error => {
+      response.statusCode = 400;
       response.send({
-        message: `Unable to find product with an id of ${request.params.id}`,
+        message: error,
         statusCode: response.statusCode
       });
+    });
+};
+
+export const updateProduct = (request, response) => {
+  // create array of attributes that can be updated
+  const attribsToUpdate = Object.keys(request.body);
+
+  // confirm that the product exists
+  Product.findAll({
+    where: {
+      id: request.params.id
     }
-  });
+  })
+    .then(product => {
+      if (product[0]) {
+        // update product in database
+        Product.update(request.body, {
+          fields: {
+            ...attribsToUpdate
+          },
+          where: {
+            id: request.params.id
+          }
+        })
+          .then(() => {
+            // send the updated product data back to user
+            Product.findAll({
+              attributes: sqlAttributes,
+              where: {
+                id: request.params.id
+              }
+            })
+              .then(product => {
+                response.send({
+                  product: product[0],
+                  statusCode: response.statusCode
+                });
+              })
+              .catch(error => {
+                response.statusCode = 400;
+                response.send({
+                  message: error,
+                  statusCode: response.statusCode
+                });
+              });
+          })
+          .catch(error => {
+            (response.statusCode = 400),
+              response.send({
+                message: error,
+                statusCode: response.statusCode
+              });
+          });
+      } else {
+        // unable to locate product with specified ID
+        response.statusCode = 404;
+        response.send({
+          message: `Unable to find a product with an id of ${request.params.id}`,
+          statusCode: response.statusCode
+        });
+      }
+    })
+    .catch(error => {
+      response.statusCode = 400;
+      response.send({
+        message: error,
+        statusCode: response.statusCode
+      });
+    });
 };
