@@ -90,6 +90,9 @@ paths:
                   type: string
                 productCategory:
                   type: string
+              required:
+                - productName
+                - productCategory
       responses:
         "200":
           description: Successful Request
@@ -196,6 +199,21 @@ paths:
                     required:
                       - message
                       - statusCode
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      statusCode:
+                        type: integer
+                    required:
+                      - message
+                      - statusCode
     patch:
       summary: modify a product
       tags:
@@ -272,6 +290,21 @@ paths:
                     required:
                       - message
                       - statusCode
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      statusCode:
+                        type: integer
+                    required:
+                      - message
+                      - statusCode
     delete:
       summary: delete a product
       tags:
@@ -301,6 +334,21 @@ paths:
                       - statusCode
         "400":
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      statusCode:
+                        type: integer
+                    required:
+                      - message
+                      - statusCode
+        "404":
+          description: Not Found
           content:
             application/json:
               schema:

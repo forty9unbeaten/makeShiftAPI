@@ -1,1 +1,5 @@
-export { sendAllProducts, sendRequestedProduct } from "./product";
+export {
+  sendAllProducts,
+  sendRequestedProduct,
+  addNewProduct
+} from "./product";
