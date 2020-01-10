@@ -51,7 +51,7 @@ export const sendRequestedProduct = (request, response) => {
 };
 
 export const addNewProduct = (request, response) => {
-  const { productName, productCategory } = request.body;
+  const { productName, productCategory, productDescription } = request.body;
   const errors = [];
 
   // request body validation
@@ -61,6 +61,11 @@ export const addNewProduct = (request, response) => {
     errors.push("Please specify a product Category");
   }
 
+  // set product description to default value
+  if (!productDescription) {
+    productDescription = `Enter a description`;
+  }
+
   if (errors.length > 0) {
     response.statusCode = 400;
     response.send({
@@ -68,7 +73,7 @@ export const addNewProduct = (request, response) => {
       statusCode: response.statusCode
     });
   } else {
-    Product.create({ productName, productCategory })
+    Product.create({ productName, productCategory, productDescription })
       .then(result => {
         response.send({
           product: {
