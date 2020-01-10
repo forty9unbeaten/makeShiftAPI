@@ -75,6 +75,7 @@ export const addNewProduct = (request, response) => {
             id: result.id,
             productName: result.productName,
             productDescription: result.productDescription,
+            productImgs: result.productImgs,
             productCategory: result.productCategory,
             ratingsCount: result.ratingsCount,
             ratings: result.ratings
@@ -90,4 +91,43 @@ export const addNewProduct = (request, response) => {
         });
       });
   }
+};
+
+export const deleteProduct = (request, response) => {
+  Product.findAll({
+    attributes: ["productName"],
+    where: {
+      id: request.params.id
+    }
+  }).then(product => {
+    if (product[0]) {
+      // product returned from SELECT query is an array of objects
+      const productName = product[0].productName;
+
+      Product.destroy({
+        where: {
+          id: request.params.id
+        }
+      })
+        .then(() => {
+          response.send({
+            productName,
+            statusCode: response.statusCode
+          });
+        })
+        .catch(error => {
+          response.statusCode = 400;
+          response.send({
+            message: error,
+            statusCode: response.statusCode
+          });
+        });
+    } else {
+      response.statusCode = 404;
+      response.send({
+        message: `Unable to find product with an id of ${request.params.id}`,
+        statusCode: response.statusCode
+      });
+    }
+  });
 };
