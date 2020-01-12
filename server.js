@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import swaggerDocRouter from "./SwaggerDocRouter";
 import { database } from "./database";
+import cors from "cors";
 import {
   sendAllProducts,
   sendRequestedProduct,
@@ -24,7 +25,7 @@ database
   });
 
 // server setup
-server.use(swaggerDocRouter, bodyParser.json());
+server.use(swaggerDocRouter, bodyParser.json(), cors());
 
 // start server
 server
