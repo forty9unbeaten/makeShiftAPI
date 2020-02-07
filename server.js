@@ -3,14 +3,21 @@ import bodyParser from "body-parser";
 import swaggerDocRouter from "./SwaggerDocRouter";
 import { productRoutes } from "./routes";
 import { database } from "./database";
+import * as models from "./models";
 import cors from "cors";
 
 const server = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // connect to database
 database
   .authenticate()
+  .then(() => {
+    models.Product.sync();
+    models.User.sync();
+    models.Rating.sync();
+    models.Comment.sync();
+  })
   .then(() => {
     console.log("Database has connected");
   })
