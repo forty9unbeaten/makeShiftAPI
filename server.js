@@ -1,13 +1,13 @@
 import express from "express";
 import bodyParser from "body-parser";
 import swaggerDocRouter from "./SwaggerDocRouter";
-import { productRoutes } from "./routes";
+import { productRoutes, userRoutes } from "./routes";
 import { database } from "./database";
 import * as models from "./models";
 import cors from "cors";
 
 const server = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 // connect to database
 database
@@ -26,7 +26,13 @@ database
   });
 
 // server setup
-server.use(swaggerDocRouter, productRoutes, bodyParser.json(), cors());
+server.use(
+  bodyParser.json(),
+  cors(),
+  swaggerDocRouter,
+  productRoutes,
+  userRoutes
+);
 
 // start server
 server.listen(PORT, () => {
