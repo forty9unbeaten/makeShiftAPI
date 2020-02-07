@@ -1,6 +1,5 @@
 import { database } from "../database";
 import sequelize from "sequelize";
-import { User } from ".";
 
 export const Product = database.define(
   "product",
