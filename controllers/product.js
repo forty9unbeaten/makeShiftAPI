@@ -1,30 +1,60 @@
-import { Product } from "../models";
-import { sqlAttributes } from "./constants";
+import { Product, Rating, Comment } from "../models";
 
 export const sendAllProducts = (request, response) => {
-  Product.findAll({
-    attributes: sqlAttributes
-  })
-    .then(products => {
+  let productCollection = {};
+
+  // find all products in database
+  Product.findAll().then(products => {
+    productCollection["products"] = products;
+    if (productCollection.products.length === 0) {
+      response.statusCode = 200;
       response.send({
-        products,
+        ...productCollection,
         statusCode: response.statusCode
       });
-    })
-    .catch(error => {
-      response.statusCode = 400;
-      response.send({
-        message: error,
-        statusCode: response.statusCode
-      });
-    });
+      return;
+    } else {
+      // find all comments and filter by productId
+      Comment.findAll()
+        .then(comments => {
+          productCollection.products.forEach(product => {
+            product["comments"] = comments.filter(
+              comment => comment.productId === product.productId
+            );
+          });
+        })
+        .then(() => {
+          // find all ratings and filter by productId
+          Rating.findAll().then(ratings => {
+            productCollection.products.forEach(product => {
+              product["ratings"] = ratings.filter(
+                rating => rating.productId === product.productId
+              );
+            });
+          });
+        })
+        .then(() => {
+          response.statusCode = 200;
+          response.send({
+            ...productCollection,
+            statusCode: response.statusCode
+          });
+        })
+        .catch(error => {
+          response.statusCode = 400;
+          response.send({
+            message: error,
+            statusCode: response.statusCode
+          });
+        });
+    }
+  });
 };
 
 export const sendRequestedProduct = (request, response) => {
   Product.findAll({
-    attributes: sqlAttributes,
     where: {
-      id: request.params.id
+      productId: request.params.id
     }
   })
     .then(product => {
@@ -51,42 +81,33 @@ export const sendRequestedProduct = (request, response) => {
 };
 
 export const addNewProduct = (request, response) => {
-  const { productName, productCategory, productDescription } = request.body;
-  const errors = [];
+  const { productName, productDescription, productCategory } = request.body;
+  let errors = [];
 
-  // request body validation
   if (!productName) {
-    errors.push(`Please specify a product name`);
-  } else if (!productCategory) {
-    errors.push("Please specify a product Category");
+    errors.push("Please enter a name for the product");
   }
-
-  // set product description to default value
+  if (!productCategory) {
+    errors.push("Please enter a category for the product");
+  }
   if (!productDescription) {
-    productDescription = `Enter a description`;
+    productDescription = "Enter a description";
   }
 
-  if (errors.length > 0) {
+  if (errors.length !== 0) {
     response.statusCode = 400;
     response.send({
-      message: errors,
+      message: errrors.join(", "),
       statusCode: response.statusCode
     });
   } else {
-    Product.create({ productName, productCategory, productDescription })
+    Product.create({
+      productName,
+      productDescription,
+      productCategory
+    })
       .then(result => {
-        response.send({
-          product: {
-            id: result.id,
-            productName: result.productName,
-            productDescription: result.productDescription,
-            productImgs: result.productImgs,
-            productCategory: result.productCategory,
-            ratingsCount: result.ratingsCount,
-            ratings: result.ratings
-          },
-          statusCode: response.statusCode
-        });
+        console.log(result);
       })
       .catch(error => {
         response.statusCode = 400;
@@ -169,7 +190,6 @@ export const updateProduct = (request, response) => {
           .then(() => {
             // send the updated product data back to user
             Product.findAll({
-              attributes: sqlAttributes,
               where: {
                 id: request.params.id
               }
