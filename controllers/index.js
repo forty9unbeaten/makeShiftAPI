@@ -5,5 +5,5 @@ export {
   deleteProduct,
   updateProduct
 } from "./product";
-
 export { addNewUser } from "./user";
+export { userLogin } from "./auth";

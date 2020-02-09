@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import swaggerDocRouter from "./SwaggerDocRouter";
-import { productRoutes, userRoutes } from "./routes";
+import { productRoutes, userRoutes, authRoutes } from "./routes";
 import { database } from "./database";
 import * as models from "./models";
 import cors from "cors";
@@ -31,7 +31,8 @@ server.use(
   cors(),
   swaggerDocRouter,
   productRoutes,
-  userRoutes
+  userRoutes,
+  authRoutes
 );
 
 // start server
