@@ -6,4 +6,4 @@ export {
   updateProduct
 } from "./product";
 export { addNewUser } from "./user";
-export { userLogin } from "./auth";
+export { userLogin, userLogout } from "./auth";
