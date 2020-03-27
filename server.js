@@ -1,8 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
 import swaggerDocRouter from "./SwaggerDocRouter";
-import { productRoutes } from "./routes";
+import { productRoutes, userRoutes, authRoutes } from "./routes";
 import { database } from "./database";
+import * as models from "./models";
 import cors from "cors";
 
 const server = express();
@@ -12,6 +13,12 @@ const PORT = process.env.PORT || 3000;
 database
   .authenticate()
   .then(() => {
+    models.Product.sync();
+    models.User.sync();
+    models.Rating.sync();
+    models.Comment.sync();
+  })
+  .then(() => {
     console.log("Database has connected");
   })
   .catch(err => {
@@ -19,7 +26,14 @@ database
   });
 
 // server setup
-server.use(swaggerDocRouter, productRoutes, bodyParser.json(), cors());
+server.use(
+  bodyParser.json(),
+  cors(),
+  swaggerDocRouter,
+  productRoutes,
+  userRoutes,
+  authRoutes
+);
 
 // start server
 server.listen(PORT, () => {

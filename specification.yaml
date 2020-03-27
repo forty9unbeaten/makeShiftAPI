@@ -32,6 +32,8 @@ components:
               type: string
               minLength: 2
               maxLength: 50
+            createdBy:
+              $ref: "#/components/schemas/username"
             ratingsCount:
               type: integer
               format: int32
@@ -41,8 +43,8 @@ components:
             - productDescription
             - productImgs
             - productCategory
-        - $ref: '#/components/schemas/ratings'
-        - $ref: '#/components/schemas/comments'
+        - $ref: "#/components/schemas/ratings"
+        - $ref: "#/components/schemas/comments"
     User:
       allOf:
         - type: object
@@ -52,16 +54,16 @@ components:
               format: int32
               minimum: 1
             username:
-              $ref: '#/components/schemas/username'
+              $ref: "#/components/schemas/username"
             firstName:
-              $ref: '#/components/schemas/firstName'
+              $ref: "#/components/schemas/firstName"
             lastName:
-              $ref: '#/components/schemas/lastName'
+              $ref: "#/components/schemas/lastName"
             email:
               type: string
               format: email_address
             bio:
-              $ref: '#/components/schemas/bio'
+              $ref: "#/components/schemas/bio"
             createdAt:
               type: string
               format: date-time
@@ -86,9 +88,9 @@ components:
           properties:
             message:
               type: string
-          required: 
+          required:
             - message
-        - $ref: '#/components/schemas/errorStatusCode'
+        - $ref: "#/components/schemas/errorStatusCode"
     errorStatusCode:
       type: object
       properties:
@@ -137,7 +139,7 @@ components:
             type: object
             properties:
               username:
-                $ref: '#/components/schemas/username'
+                $ref: "#/components/schemas/username"
               rating:
                 type: integer
                 format: int32
@@ -162,7 +164,7 @@ components:
                 format: int32
                 minimum: 1
               username:
-                $ref: '#/components/schemas/username'
+                $ref: "#/components/schemas/username"
               comment:
                 type: string
                 minLength: 1
@@ -180,6 +182,19 @@ components:
       required:
         - comments
         - commentsCount
+  responses:
+    401:
+      description: Unauthorized to Make Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
+      headers:
+        Authenticate:
+          description: Includes the URI to receive a token
+          required: true
+          schema:
+            type: string
 paths:
   /auth/login:
     post:
@@ -194,14 +209,14 @@ paths:
               type: object
               properties:
                 username:
-                  $ref: '#/components/schemas/username'
+                  $ref: "#/components/schemas/username"
                 password:
-                  $ref: '#/components/schemas/password'
+                  $ref: "#/components/schemas/password"
               required:
                 - username
                 - password
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -210,72 +225,68 @@ paths:
                   - type: object
                     properties:
                       username:
-                        $ref: '#/components/schemas/username'
+                        $ref: "#/components/schemas/username"
                       token:
                         type: string
                     required:
                       - username
                       - token
-                  - $ref: '#/components/schemas/successStatusCode'
-        '400':
+                  - $ref: "#/components/schemas/successStatusCode"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
   /auth/logout:
     get:
       summary: User logout
       tags:
         - Authentication
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
               schema:
                 allOf:
                   - type: object
-                  - $ref: '#/components/schemas/successStatusCode'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
+                  - $ref: "#/components/schemas/successStatusCode"
+        "401":
+          $ref: "#/components/responses/401"
   /users:
     get:
       summary: retrieve list of all users
-      tags: 
+      tags:
         - Users
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
               schema:
                 allOf:
-                - type: object
-                  properties:
-                    users:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/User'
-                  required:
-                    - users
-                - $ref: '#/components/schemas/successStatusCode'
-        '400':
+                  - type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/User"
+                    required:
+                      - users
+                  - $ref: "#/components/schemas/successStatusCode"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
     post:
       summary: create a new user
       tags:
@@ -288,16 +299,16 @@ paths:
               type: object
               properties:
                 username:
-                  $ref: '#/components/schemas/username'
+                  $ref: "#/components/schemas/username"
                 password:
-                  $ref: '#/components/schemas/password'
+                  $ref: "#/components/schemas/password"
                 email:
                   type: string
                   format: email_address
                 firstName:
-                  $ref: '#/components/schemas/firstName'
+                  $ref: "#/components/schemas/firstName"
                 lastName:
-                  $ref: '#/components/schemas/lastName'
+                  $ref: "#/components/schemas/lastName"
               required:
                 - username
                 - password
@@ -316,21 +327,21 @@ paths:
                       user:
                         allOf:
                           - type: object
-                          - $ref: '#/components/schemas/User'
+                          - $ref: "#/components/schemas/User"
                     required:
                       - user
-                  - $ref: '#/components/schemas/successStatusCode'
+                  - $ref: "#/components/schemas/successStatusCode"
         "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
   /users/{username}:
     get:
       summary: retrieve a user's information
       tags:
-      - Users
+        - Users
       parameters:
         - in: path
           name: username
@@ -339,7 +350,7 @@ paths:
           required: true
           description: The username of the user to retrieve
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -350,22 +361,22 @@ paths:
                       user:
                         allOf:
                           - type: object
-                          - $ref: '#/components/schemas/User'
+                          - $ref: "#/components/schemas/User"
                     required:
                       - user
-                  - $ref: '#/components/schemas/successStatusCode'
-        '400':
+                  - $ref: "#/components/schemas/successStatusCode"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
     patch:
       summary: modify a user's information
       tags:
@@ -385,18 +396,18 @@ paths:
               type: object
               properties:
                 username:
-                  $ref: '#/components/schemas/username'
+                  $ref: "#/components/schemas/username"
                 email:
                   type: string
                   format: email_address
                 firstName:
-                  $ref: '#/components/schemas/firstName'
+                  $ref: "#/components/schemas/firstName"
                 lastName:
-                  $ref: '#/components/schemas/lastName'
+                  $ref: "#/components/schemas/lastName"
                 bio:
-                  $ref: '#/components/schemas/bio'
+                  $ref: "#/components/schemas/bio"
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -407,28 +418,24 @@ paths:
                       user:
                         allOf:
                           - type: object
-                          - $ref: '#/components/schemas/User'
+                          - $ref: "#/components/schemas/User"
                     required:
                       - user
-                  - $ref: '#/components/schemas/successStatusCode'
-        '401':
-          description: Unauthorized to Make Request
-          content:
-            application/json:
-              schema:
-               $ref: '#/components/schemas/OperationalError'
-        '400':
+                  - $ref: "#/components/schemas/successStatusCode"
+        "401":
+          $ref: "#/components/responses/401"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-               $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
     delete:
       summary: delete a user
       tags:
@@ -441,7 +448,7 @@ paths:
           required: true
           description: The username of the user to delete
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -455,29 +462,25 @@ paths:
                 required:
                   - username
                   - statusCode
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '401':
-          description: Unauthorized to Make Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
   /users/{username}/photo:
     put:
       summary: Update a user's profile photo
       tags:
-      - Users
+        - Users
       parameters:
         - in: path
           name: username
@@ -499,7 +502,7 @@ paths:
               required:
                 - photo
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -512,37 +515,33 @@ paths:
                         format: binary
                     required:
                       - photo
-                  - $ref: '#/components/schemas/successStatusCode'
-        '400':
+                  - $ref: "#/components/schemas/successStatusCode"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '401':
-          description: Unauthorized to Make Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '413':
+                $ref: "#/components/schemas/OperationalError"
+        "413":
           description: File Size Too Large
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '415':
+                $ref: "#/components/schemas/OperationalError"
+        "415":
           description: Unsupported Data Type
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
   /products:
     get:
       summary: retrieve list of all products in catalog
@@ -560,14 +559,14 @@ paths:
                       products:
                         type: array
                         items:
-                          $ref: '#/components/schemas/Product'
-                  - $ref: '#/components/schemas/successStatusCode'
+                          $ref: "#/components/schemas/Product"
+                  - $ref: "#/components/schemas/successStatusCode"
         "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
     post:
       summary: add a new product to catalog
       tags:
@@ -600,22 +599,18 @@ paths:
                       product:
                         allOf:
                           - type: object
-                          - $ref: '#/components/schemas/Product'
+                          - $ref: "#/components/schemas/Product"
                     required:
                       - product
-                  - $ref: '#/components/schemas/successStatusCode'
+                  - $ref: "#/components/schemas/successStatusCode"
         "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '401':
-          description: Unauthorized to Make Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
+        "401":
+          $ref: "#/components/responses/401"
   /products/{productId}:
     get:
       summary: retrieve a product
@@ -640,22 +635,22 @@ paths:
                       product:
                         allOf:
                           - type: object
-                          - $ref: '#/components/schemas/Product'
+                          - $ref: "#/components/schemas/Product"
                     required:
                       - product
-                  - $ref: '#/components/schemas/successStatusCode'
+                  - $ref: "#/components/schemas/successStatusCode"
         "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
         "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
     patch:
       summary: modify a product
       tags:
@@ -692,28 +687,24 @@ paths:
                       product:
                         allOf:
                           - type: object
-                          - $ref: '#/components/schemas/Product'
+                          - $ref: "#/components/schemas/Product"
                     required:
                       - product
-                  - $ref: '#/components/schemas/successStatusCode'
+                  - $ref: "#/components/schemas/successStatusCode"
         "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '401':
-          description: Unauthorized to Make Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
+        "401":
+          $ref: "#/components/responses/401"
         "404":
           description: Not Found
           content:
             application/json:
               schema:
-               $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
     delete:
       summary: delete a product
       tags:
@@ -740,25 +731,21 @@ paths:
                         maxLength: 50
                     required:
                       - productName
-                  - $ref: '#/components/schemas/successStatusCode'
+                  - $ref: "#/components/schemas/successStatusCode"
         "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '401':
-          description: Unauthorized to Make Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
+        "401":
+          $ref: "#/components/responses/401"
         "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
   /products/{productId}/photos:
     put:
       summary: Update photos of a product
@@ -787,7 +774,7 @@ paths:
               required:
                 - photos
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -795,43 +782,39 @@ paths:
                 allOf:
                   - type: object
                     properties:
-                      productImgs: 
+                      productImgs:
                         type: array
                         items:
                           type: string
                     required:
                       - productImgs
-                  - $ref: '#/components/schemas/successStatusCode'
-        '400':
+                  - $ref: "#/components/schemas/successStatusCode"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '401':
-          description: Not Authorized to Make Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '413':
+                $ref: "#/components/schemas/OperationalError"
+        "413":
           description: File Size Too Large
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '415':
+                $ref: "#/components/schemas/OperationalError"
+        "415":
           description: Unsupported File Type
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
   /ratings/{productId}:
     get:
       summary: Get a list of ratings for a product
@@ -845,7 +828,7 @@ paths:
           description: ID of the product to which ratings apply
           required: true
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -858,20 +841,20 @@ paths:
                         minimum: 1
                     required:
                       - productId
-                  - $ref: '#/components/schemas/ratings'
-                  - $ref: '#/components/schemas/successStatusCode'
-        '400':
+                  - $ref: "#/components/schemas/ratings"
+                  - $ref: "#/components/schemas/successStatusCode"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
     post:
       summary: Add a new rating
       tags:
@@ -893,13 +876,13 @@ paths:
               properties:
                 username:
                   type: string
-                rating: 
+                rating:
                   type: integer
               required:
                 - username
                 - rating
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -912,26 +895,22 @@ paths:
                         minimum: 1
                     required:
                       - productId
-                  - $ref: '#/components/schemas/ratings'
-                  - $ref: '#/components/schemas/successStatusCode'
-        '400':
+                  - $ref: "#/components/schemas/ratings"
+                  - $ref: "#/components/schemas/successStatusCode"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '401':
-          description: Unauthorized to Make Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
   /comments/{productId}:
     post:
       summary: Post a new comment
@@ -953,7 +932,7 @@ paths:
                 - type: object
                   properties:
                     username:
-                      $ref: '#/components/schemas/username'
+                      $ref: "#/components/schemas/username"
                     comment:
                       type: string
                       minLength: 1
@@ -962,7 +941,7 @@ paths:
                     - username
                     - comment
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -976,26 +955,22 @@ paths:
                         minimum: 1
                     required:
                       - productId
-                  - $ref: '#/components/schemas/comments'
-                  - $ref: '#/components/schemas/successStatusCode'
-        '400':
+                  - $ref: "#/components/schemas/comments"
+                  - $ref: "#/components/schemas/successStatusCode"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '401': 
-          description: Not Authorized to Make Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
   /comments/{commentId}:
     delete:
       summary: Delete a comment
@@ -1009,7 +984,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful Request
           content:
             application/json:
@@ -1023,22 +998,18 @@ paths:
                         minimum: 1
                     required:
                       - commentId
-                  - $ref: '#/components/schemas/successStatusCode'
-        '400':
+                  - $ref: "#/components/schemas/successStatusCode"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
-        '401':
-          description: Unauthorized to Make Request
-          content:
-            applciation/json:
-              schema:
-                $ref: '#/components/schemas/OperationalError'
-        '404':
+                $ref: "#/components/schemas/OperationalError"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OperationalError'
+                $ref: "#/components/schemas/OperationalError"
