@@ -6,6 +6,6 @@ const userRoutes = express.Router();
 
 userRoutes.get("/users", getAllUsers);
 userRoutes.post("/users", addNewUser);
-userRoutes.delete("/users/:username", deleteUser);
+userRoutes.delete("/users/:username", authenticateToken, deleteUser);
 
 export default userRoutes;
