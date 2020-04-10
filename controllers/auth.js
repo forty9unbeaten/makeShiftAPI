@@ -11,7 +11,7 @@ export const userLogin = (request, response) => {
     response.statusCode = 400;
     response.send({
       message: "Enter a username/email address",
-      statusCode: response.statusCode
+      statusCode: response.statusCode,
     });
   }
 
@@ -19,42 +19,42 @@ export const userLogin = (request, response) => {
     response.statusCode = 400;
     response.send({
       message: "Enter a password",
-      statusCode: response.statusCode
+      statusCode: response.statusCode,
     });
   }
 
   // query database to get user information
   User.findOne({
     where: {
-      [Op.or]: [{ username }, { email: username }]
-    }
+      [Op.or]: [{ username }, { email: username }],
+    },
   })
-    .then(async user => {
+    .then(async (user) => {
       // generate json web token if username/email and password exist
       if (user && (await bcrypt.compare(password, user.password))) {
         const token = jwt.sign(
           { username: user.username },
           process.env.JWT_SECRET,
-          { expiresIn: "24h" }
+          { expiresIn: "12h" }
         );
         response.send({
           username,
           token,
-          statusCode: 200
+          statusCode: 200,
         });
       } else {
         response.statusCode = 404;
         response.send({
           message: "Invalid username/email and/or password",
-          statusCode: response.statusCode
+          statusCode: response.statusCode,
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       response.statusCode = 400;
       response.send({
         message: "There was a problem logging in",
-        statusCode: response.statusCode
+        statusCode: response.statusCode,
       });
     });
 };
@@ -66,11 +66,11 @@ export const userLogout = (request, response) => {
       response.statusCode = 401;
       response.send({
         message: "Unauthorized to make request",
-        statusCode: response.statusCode
+        statusCode: response.statusCode,
       });
     } else {
       response.send({
-        statusCode: 200
+        statusCode: 200,
       });
     }
   });

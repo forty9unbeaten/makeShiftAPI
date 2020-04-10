@@ -4,31 +4,31 @@ export const sendAllProducts = (request, response) => {
   let productCollection = {};
 
   // find all products in database
-  Product.findAll().then(products => {
+  Product.findAll().then((products) => {
     productCollection["products"] = products;
     if (productCollection.products.length === 0) {
       response.statusCode = 200;
       response.send({
         ...productCollection,
-        statusCode: response.statusCode
+        statusCode: response.statusCode,
       });
       return;
     } else {
       // find all comments and filter by productId
       Comment.findAll()
-        .then(comments => {
-          productCollection.products.forEach(product => {
+        .then((comments) => {
+          productCollection.products.forEach((product) => {
             product["comments"] = comments.filter(
-              comment => comment.productId === product.productId
+              (comment) => comment.productId === product.productId
             );
           });
         })
         .then(() => {
           // find all ratings and filter by productId
-          Rating.findAll().then(ratings => {
-            productCollection.products.forEach(product => {
+          Rating.findAll().then((ratings) => {
+            productCollection.products.forEach((product) => {
               product["ratings"] = ratings.filter(
-                rating => rating.productId === product.productId
+                (rating) => rating.productId === product.productId
               );
             });
           });
@@ -37,14 +37,14 @@ export const sendAllProducts = (request, response) => {
           response.statusCode = 200;
           response.send({
             ...productCollection,
-            statusCode: response.statusCode
+            statusCode: response.statusCode,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           response.statusCode = 400;
           response.send({
             message: error,
-            statusCode: response.statusCode
+            statusCode: response.statusCode,
           });
         });
     }
@@ -54,28 +54,28 @@ export const sendAllProducts = (request, response) => {
 export const sendRequestedProduct = (request, response) => {
   Product.findAll({
     where: {
-      productId: request.params.id
-    }
+      productId: request.params.id,
+    },
   })
-    .then(product => {
+    .then((product) => {
       if (product[0]) {
         response.send({
           product: product[0],
-          statusCode: response.statusCode
+          statusCode: response.statusCode,
         });
       } else {
         response.statusCode = 404;
         response.send({
           message: `Unable to find product with id of ${request.params.id}`,
-          statusCode: response.statusCode
+          statusCode: response.statusCode,
         });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       response.statusCode = 400;
       response.send({
         message: error,
-        statusCode: response.statusCode
+        statusCode: response.statusCode,
       });
     });
 };
@@ -98,22 +98,22 @@ export const addNewProduct = (request, response) => {
     response.statusCode = 400;
     response.send({
       message: errrors.join(", "),
-      statusCode: response.statusCode
+      statusCode: response.statusCode,
     });
   } else {
     Product.create({
       productName,
       productDescription,
-      productCategory
+      productCategory,
     })
-      .then(result => {
+      .then((result) => {
         console.log(result);
       })
-      .catch(error => {
+      .catch((error) => {
         response.statusCode = 400;
         response.send({
           message: error,
-          statusCode: response.statusCode
+          statusCode: response.statusCode,
         });
       });
   }
@@ -123,45 +123,45 @@ export const deleteProduct = (request, response) => {
   Product.findAll({
     attributes: ["productName"],
     where: {
-      id: request.params.id
-    }
+      id: request.params.id,
+    },
   })
-    .then(product => {
+    .then((product) => {
       if (product[0]) {
         // product returned from SELECT query is an array of objects
         const productName = product[0].productName;
 
         Product.destroy({
           where: {
-            id: request.params.id
-          }
+            id: request.params.id,
+          },
         })
           .then(() => {
             response.send({
               productName,
-              statusCode: response.statusCode
+              statusCode: response.statusCode,
             });
           })
-          .catch(error => {
+          .catch((error) => {
             response.statusCode = 400;
             response.send({
               message: error,
-              statusCode: response.statusCode
+              statusCode: response.statusCode,
             });
           });
       } else {
         response.statusCode = 404;
         response.send({
           message: `Unable to find product with an id of ${request.params.id}`,
-          statusCode: response.statusCode
+          statusCode: response.statusCode,
         });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       response.statusCode = 400;
       response.send({
         message: error,
-        statusCode: response.statusCode
+        statusCode: response.statusCode,
       });
     });
 };
@@ -173,46 +173,46 @@ export const updateProduct = (request, response) => {
   // confirm that the product exists
   Product.findAll({
     where: {
-      id: request.params.id
-    }
+      id: request.params.id,
+    },
   })
-    .then(product => {
+    .then((product) => {
       if (product[0]) {
         // update product in database
         Product.update(request.body, {
           fields: {
-            ...attribsToUpdate
+            ...attribsToUpdate,
           },
           where: {
-            id: request.params.id
-          }
+            id: request.params.id,
+          },
         })
           .then(() => {
             // send the updated product data back to user
             Product.findAll({
               where: {
-                id: request.params.id
-              }
+                id: request.params.id,
+              },
             })
-              .then(product => {
+              .then((product) => {
                 response.send({
                   product: product[0],
-                  statusCode: response.statusCode
+                  statusCode: response.statusCode,
                 });
               })
-              .catch(error => {
+              .catch((error) => {
                 response.statusCode = 400;
                 response.send({
                   message: error,
-                  statusCode: response.statusCode
+                  statusCode: response.statusCode,
                 });
               });
           })
-          .catch(error => {
+          .catch((error) => {
             (response.statusCode = 400),
               response.send({
                 message: error,
-                statusCode: response.statusCode
+                statusCode: response.statusCode,
               });
           });
       } else {
@@ -220,15 +220,15 @@ export const updateProduct = (request, response) => {
         response.statusCode = 404;
         response.send({
           message: `Unable to find a product with an id of ${request.params.id}`,
-          statusCode: response.statusCode
+          statusCode: response.statusCode,
         });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       response.statusCode = 400;
       response.send({
         message: error,
-        statusCode: response.statusCode
+        statusCode: response.statusCode,
       });
     });
 };
