@@ -4,16 +4,17 @@ import {
   sendAllProducts,
   sendRequestedProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
 } from "../controllers";
+import { authenticateToken } from "../middleware";
 
 const productRoutes = express.Router();
 
 productRoutes
-  .post("/products", addNewProduct)
+  .post("/products", authenticateToken, addNewProduct)
   .get("/products", sendAllProducts)
   .get("/products/:id", sendRequestedProduct)
-  .patch("/products/:id", updateProduct)
-  .delete("/products/:id", deleteProduct);
+  .patch("/products/:id", authenticateToken, updateProduct)
+  .delete("/products/:id", authenticateToken, deleteProduct);
 
 export default productRoutes;
