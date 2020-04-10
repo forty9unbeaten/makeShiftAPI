@@ -1,6 +1,5 @@
 import { database } from "../database";
 import sequelize from "sequelize";
-import { Product, User } from ".";
 
 export const Comment = database.define(
   "comment",
@@ -9,25 +8,25 @@ export const Comment = database.define(
       type: sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      allowNull: false
+      allowNull: false,
     },
     productId: {
       type: sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     username: {
       type: sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     comment: {
       type: sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     createdAt: {
       type: sequelize.DATE,
       defaultValue: sequelize.NOW,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   },
   { timestamps: false, indexes: [{ unique: true, fields: ["commentId"] }] }
 );

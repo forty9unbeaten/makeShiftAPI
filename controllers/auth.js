@@ -6,8 +6,8 @@ import jwt from "jsonwebtoken";
 export const userLogin = (request, response) => {
   const { username, password } = request.body;
 
-  // username/email and password inclusion validation
   if (!username) {
+    // no email or username included in request
     response.statusCode = 400;
     response.send({
       message: "Enter a username/email address",
@@ -16,6 +16,7 @@ export const userLogin = (request, response) => {
   }
 
   if (!password) {
+    // no password included in request
     response.statusCode = 400;
     response.send({
       message: "Enter a password",
@@ -43,6 +44,7 @@ export const userLogin = (request, response) => {
           statusCode: 200,
         });
       } else {
+        // invalid credentials
         response.statusCode = 404;
         response.send({
           message: "Invalid username/email and/or password",
@@ -51,6 +53,7 @@ export const userLogin = (request, response) => {
       }
     })
     .catch((err) => {
+      // login error
       response.statusCode = 400;
       response.send({
         message: "There was a problem logging in",
@@ -60,18 +63,10 @@ export const userLogin = (request, response) => {
 };
 
 export const userLogout = (request, response) => {
-  const { token } = request.body;
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      response.statusCode = 401;
-      response.send({
-        message: "Unauthorized to make request",
-        statusCode: response.statusCode,
-      });
-    } else {
-      response.send({
-        statusCode: 200,
-      });
-    }
+  // token aithentication handled by middleware
+  // only need to send 200 status code
+  response.statusCode = 200;
+  response.send({
+    statusCode: response.statusCode,
   });
 };

@@ -1,6 +1,6 @@
 import sequelize from "sequelize";
 import { database } from "../database";
-import { Product, User } from ".";
+import { Product } from ".";
 
 export const Rating = database.define(
   "rating",
@@ -9,23 +9,23 @@ export const Rating = database.define(
       type: sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-      allowNull: false
+      allowNull: false,
     },
     productId: {
       type: sequelize.INTEGER,
       allowNull: false,
       references: {
         model: Product,
-        key: "productId"
-      }
+        key: "productId",
+      },
     },
     username: {
       type: sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     rating: {
-      type: sequelize.INTEGER
-    }
+      type: sequelize.INTEGER,
+    },
   },
   { timestamps: false, indexes: [{ unique: true, fields: ["ratingId"] }] }
 );
