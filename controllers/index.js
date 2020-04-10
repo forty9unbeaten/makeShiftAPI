@@ -3,7 +3,7 @@ export {
   sendRequestedProduct,
   addNewProduct,
   deleteProduct,
-  updateProduct
+  updateProduct,
 } from "./product";
-export { addNewUser } from "./user";
+export { addNewUser, deleteUser, getAllUsers } from "./user";
 export { userLogin, userLogout } from "./auth";
